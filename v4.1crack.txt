@@ -1,0 +1,30 @@
+Program CheckDataReg
+old:
+ELSE
+	
+	CheckDataReg := FALSE;
+	END_IF
+END_IF
+--------------------------------------------------------------------------------------
+new:
+ELSE
+	IF data_1=6666 AND data_2=6666 AND data_3=6666 AND data_4=6666  THEN
+		CheckDataReg := TRUE;
+		IF ((GRV.HoldingRegisters.GrainDryer.Blocking_Day <> C[3] ) OR  //если текущяя дата блокировки не равна пришедшей во входных параметрах
+			(GRV.HoldingRegisters.GrainDryer.Blocking_Month <> C[4]) OR
+			(GRV.HoldingRegisters.GrainDryer.Blocking_Year <> C[5]*256+C[6]) ) THEN
+			// то присваиваем дате блокировке входные параметры
+			GRV.HoldingRegisters.GrainDryer.Blocking_Day := GRV.HoldingRegisters.GrainDryer.Current_Day ;//day
+			IF GRV.HoldingRegisters.GrainDryer.Current_Month<12 THEN
+				GRV.HoldingRegisters.GrainDryer.Blocking_Month := GRV.HoldingRegisters.GrainDryer.Current_Month+1; //month
+				GRV.HoldingRegisters.GrainDryer.Blocking_Year := GRV.HoldingRegisters.GrainDryer.Current_Year  ; //year
+			ELSE 
+				GRV.HoldingRegisters.GrainDryer.Blocking_Month := 1; //month
+				GRV.HoldingRegisters.GrainDryer.Blocking_Year := GRV.HoldingRegisters.GrainDryer.Current_Year+1  ; //year
+			END_IF
+			
+		END_IF
+	ELSE
+	CheckDataReg := FALSE;
+	END_IF
+END_IF
